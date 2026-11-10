@@ -1,1 +1,340 @@
+//requires java.desktop;
+import javax.swing.*;
+import javax.swing.text.*;
+import java.awt.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 
+public class Main extends JFrame {
+
+    private JTextField txtNombre, txtDni, txtFecha;
+    private JComboBox<String> cbOrigen, cbDestino;
+    private JCheckBox chkAudifonos, chkManta, chkRevistas, chkComida;
+    private JRadioButton rbPrimero, rbSegundo;
+    private JList<String> listaServicio;
+    private ButtonGroup grupoPisos;
+
+    private final DateTimeFormatter formato =
+            DateTimeFormatter.ofPattern("dd/MM/uuuu")
+                    .withResolverStyle(ResolverStyle.STRICT);
+
+    public Main() {
+        setTitle("Compra de Pasajes - Transporte Terrestre");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel principal = new JPanel(new BorderLayout(10, 10));
+        principal.setBorder(
+                BorderFactory.createEmptyBorder(15, 15, 15, 15)
+        );
+
+        JLabel titulo = new JLabel(
+                "REGISTRO DE PASAJES",
+                SwingConstants.CENTER
+        );
+        titulo.setFont(new Font("Arial", Font.BOLD, 20));
+        principal.add(titulo, BorderLayout.NORTH);
+
+        JPanel formulario = new JPanel(new GridLayout(9, 2, 10, 10));
+
+        // DATOS PERSONALES
+        formulario.add(new JLabel("Nombre completo:"));
+        txtNombre = new JTextField();
+        formulario.add(txtNombre);
+
+        // DNI: SOLO 8 NÚMEROS
+        formulario.add(new JLabel("Documento de identidad:"));
+        txtDni = new JTextField();
+
+        ((AbstractDocument) txtDni.getDocument())
+                .setDocumentFilter(new DocumentFilter() {
+
+                    @Override
+                    public void replace(
+                            FilterBypass fb,
+                            int offset,
+                            int length,
+                            String texto,
+                            AttributeSet attrs
+                    ) throws BadLocationException {
+
+                        if (texto == null) {
+                            texto = "";
+                        }
+
+                        String actual = fb.getDocument().getText(
+                                0, fb.getDocument().getLength()
+                        );
+
+                        String nuevo = actual.substring(0, offset)
+                                + texto
+                                + actual.substring(offset + length);
+
+                        if (!nuevo.matches("[0-9]*")) {
+                            JOptionPane.showMessageDialog(
+                                    Main.this,
+                                    "El DNI solo debe contener números.",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                            return;
+                        }
+
+                        if (nuevo.length() > 8) {
+                            JOptionPane.showMessageDialog(
+                                    Main.this,
+                                    "El DNI no puede tener más de 8 números.",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                            return;
+                        }
+
+                        super.replace(fb, offset, length, texto, attrs);
+                    }
+
+                    @Override
+                    public void insertString(
+                            FilterBypass fb,
+                            int offset,
+                            String texto,
+                            AttributeSet attrs
+                    ) throws BadLocationException {
+                        replace(fb, offset, 0, texto, attrs);
+                    }
+                });
+
+        formulario.add(txtDni);
+
+        // FECHA ACTUAL AUTOMÁTICA Y EDITABLE
+        formulario.add(new JLabel("Fecha de viaje (dd/MM/yyyy):"));
+        txtFecha = new JTextField(LocalDate.now().format(formato));
+        formulario.add(txtFecha);
+
+        // ORIGEN Y DESTINO
+        String[] ciudades = {
+                "Arequipa", "Lima", "Cusco", "Puno", "Tacna"
+        };
+
+        formulario.add(new JLabel("Lugar de origen:"));
+        cbOrigen = new JComboBox<>(ciudades);
+        formulario.add(cbOrigen);
+
+        formulario.add(new JLabel("Lugar de destino:"));
+        cbDestino = new JComboBox<>(ciudades);
+        cbDestino.setSelectedIndex(1);
+        formulario.add(cbDestino);
+
+        // PISO DEL BUS
+        formulario.add(new JLabel("Piso del bus:"));
+
+        JPanel panelPisos = new JPanel(
+                new FlowLayout(FlowLayout.LEFT)
+        );
+
+        rbPrimero = new JRadioButton("1er piso");
+        rbSegundo = new JRadioButton("2do piso");
+
+        grupoPisos = new ButtonGroup();
+        grupoPisos.add(rbPrimero);
+        grupoPisos.add(rbSegundo);
+        rbPrimero.setSelected(true);
+
+        panelPisos.add(rbPrimero);
+        panelPisos.add(rbSegundo);
+        formulario.add(panelPisos);
+
+        // SERVICIOS OPCIONALES
+        formulario.add(new JLabel("Servicios adicionales:"));
+
+        JPanel panelExtras = new JPanel(new GridLayout(2, 2));
+
+        chkAudifonos = new JCheckBox("Audífonos $5");
+        chkManta = new JCheckBox("Manta $2.5");
+        chkRevistas = new JCheckBox("Revistas $1");
+        chkComida = new JCheckBox("Comida $8");
+
+        panelExtras.add(chkAudifonos);
+        panelExtras.add(chkManta);
+        panelExtras.add(chkRevistas);
+        panelExtras.add(chkComida);
+        formulario.add(panelExtras);
+
+        // CALIDAD DE SERVICIO
+        formulario.add(new JLabel("Calidad del servicio:"));
+
+        listaServicio = new JList<>(new String[]{
+                "Económico", "Estándar", "VIP"
+        });
+        listaServicio.setSelectionMode(
+                ListSelectionModel.SINGLE_SELECTION
+        );
+        listaServicio.setSelectedIndex(0);
+        listaServicio.setVisibleRowCount(3);
+        formulario.add(new JScrollPane(listaServicio));
+
+        // EMPRESA
+        formulario.add(new JLabel("Empresa:"));
+        formulario.add(new JLabel("Transportes UCSM"));
+
+        principal.add(formulario, BorderLayout.CENTER);
+
+        // BOTONES
+        JPanel panelBotones = new JPanel(new FlowLayout());
+
+        JButton btnResumen = new JButton("Mostrar resumen");
+        JButton btnLimpiar = new JButton("Limpiar");
+
+        panelBotones.add(btnResumen);
+        panelBotones.add(btnLimpiar);
+        principal.add(panelBotones, BorderLayout.SOUTH);
+
+        // EVENTOS
+        btnResumen.addActionListener(e -> mostrarResumen());
+        btnLimpiar.addActionListener(e -> limpiarFormulario());
+
+        setContentPane(principal);
+        pack();
+        setSize(
+                Math.max(600, getWidth()),
+                Math.max(650, getHeight())
+        );
+        setMinimumSize(getSize());
+        setLocationRelativeTo(null);
+    }
+
+    private void mostrarResumen() {
+        String nombre = txtNombre.getText().trim();
+        String dni = txtDni.getText().trim();
+        String fecha = txtFecha.getText().trim();
+
+        if (nombre.isEmpty() || dni.isEmpty() || fecha.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Complete todos los datos personales.",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        if (!dni.matches("[0-9]{8}")) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "El DNI debe tener exactamente 8 números.",
+                    "Error de DNI",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        try {
+            LocalDate.parse(fecha, formato);
+        } catch (DateTimeParseException e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Ingrese una fecha válida (dd/MM/yyyy).",
+                    "Error de fecha",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        String origen = (String) cbOrigen.getSelectedItem();
+        String destino = (String) cbDestino.getSelectedItem();
+
+        if (origen.equals(destino)) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "El origen y el destino deben ser diferentes.",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        String servicio = listaServicio.getSelectedValue();
+
+        if (servicio == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Seleccione la calidad del servicio.",
+                    "Advertencia",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
+        }
+
+        String piso = rbPrimero.isSelected()
+                ? "Primer piso" : "Segundo piso";
+
+        String extras = "";
+
+        if (chkAudifonos.isSelected()) {
+            extras += "Audífonos, ";
+        }
+        if (chkManta.isSelected()) {
+            extras += "Manta, ";
+        }
+        if (chkRevistas.isSelected()) {
+            extras += "Revistas, ";
+        }
+        if (chkComida.isSelected()) {
+            extras += "Comida, ";
+        }
+
+        if (extras.isEmpty()) {
+            extras = "Ninguno";
+        } else {
+            extras = extras.substring(0, extras.length() - 2);
+        }
+
+        String resumen =
+                "RESUMEN DE COMPRA DE PASAJE\n\n"
+                + "Pasajero: " + nombre + "\n"
+                + "DNI: " + dni + "\n"
+                + "Fecha: " + fecha + "\n"
+                + "Origen: " + origen + "\n"
+                + "Destino: " + destino + "\n"
+                + "Piso: " + piso + "\n"
+                + "Servicio: " + servicio + "\n"
+                + "Extras: " + extras;
+
+        JOptionPane.showMessageDialog(
+                this,
+                resumen,
+                "Resumen del pasajero",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
+    private void limpiarFormulario() {
+        txtNombre.setText("");
+        txtDni.setText("");
+        txtFecha.setText(LocalDate.now().format(formato));
+
+        cbOrigen.setSelectedIndex(0);
+        cbDestino.setSelectedIndex(1);
+        rbPrimero.setSelected(true);
+
+        chkAudifonos.setSelected(false);
+        chkManta.setSelected(false);
+        chkRevistas.setSelected(false);
+        chkComida.setSelected(false);
+
+        listaServicio.setSelectedIndex(0);
+        txtNombre.requestFocusInWindow();
+
+        JOptionPane.showMessageDialog(
+                this,
+                "Formulario reiniciado correctamente."
+        );
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new Main().setVisible(true);
+        });
+    }
+}
