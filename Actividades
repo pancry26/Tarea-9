@@ -65,3 +65,27 @@ public class Main {
         });
     }
 }
+//1.4.Implementación combinada con JPanel
+import javax.swing.*;
+import java.awt.*;
+
+public class Main {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame ventana = new JFrame("Demostracion de Panel - PINT_SANC");
+            ventana.setLayout(new BorderLayout());
+
+            JPanel panelBotones = new JPanel(new GridLayout(1, 5));
+
+            for (int i = 1; i <= 5; i++) {
+                panelBotones.add(new JButton("Boton " + i));
+            }
+
+            ventana.add(panelBotones, BorderLayout.SOUTH);
+            ventana.setSize(450, 200);
+            ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            ventana.setLocationRelativeTo(null);
+            ventana.setVisible(true);
+        });
+    }
+}
