@@ -1,0 +1,178 @@
+//1. FlowLayout
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Main extends JFrame {
+
+    private FlowLayout esquema;
+    private Container contenedor;
+
+    public Main() {
+        super("PINT_SANC");
+
+        esquema = new FlowLayout();
+        contenedor = getContentPane();
+        setLayout(esquema);
+
+        JButton botonIzquierda = new JButton("Izquierda");
+        JButton botonCentro = new JButton("Centro");
+        JButton botonDerecha = new JButton("Derecha");
+
+        add(botonIzquierda);
+        add(botonCentro);
+        add(botonDerecha);
+
+        botonIzquierda.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evento) {
+                esquema.setAlignment(FlowLayout.LEFT);
+                esquema.layoutContainer(contenedor);
+            }
+        });
+
+        botonCentro.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evento) {
+                esquema.setAlignment(FlowLayout.CENTER);
+                esquema.layoutContainer(contenedor);
+            }
+        });
+
+        botonDerecha.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evento) {
+                esquema.setAlignment(FlowLayout.RIGHT);
+                esquema.layoutContainer(contenedor);
+            }
+        });
+
+        setSize(300, 100);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Main());
+    }
+}
+
+//2. BorderLayout
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Main extends JFrame implements ActionListener {
+
+    private JButton[] botones;
+
+    private static final String[] nombres = {
+        "Ocultar Norte",
+        "Ocultar Sur",
+        "Ocultar Este",
+        "Ocultar Oeste",
+        "Ocultar Centro"
+    };
+
+    private BorderLayout esquema;
+
+    public Main() {
+        super("PINT_SANC");
+
+        esquema = new BorderLayout(5, 5);
+        setLayout(esquema);
+
+        botones = new JButton[nombres.length];
+
+        for (int i = 0; i < nombres.length; i++) {
+            botones[i] = new JButton(nombres[i]);
+            botones[i].addActionListener(this);
+        }
+
+        add(botones[0], BorderLayout.NORTH);
+        add(botones[1], BorderLayout.SOUTH);
+        add(botones[2], BorderLayout.EAST);
+        add(botones[3], BorderLayout.WEST);
+        add(botones[4], BorderLayout.CENTER);
+
+        setSize(400, 250);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent evento) {
+        for (JButton boton : botones) {
+            if (evento.getSource() == boton) {
+                boton.setVisible(false);
+            } else {
+                boton.setVisible(true);
+            }
+        }
+
+        esquema.layoutContainer(getContentPane());
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Main());
+    }
+}
+
+//3. GridLayout
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Main extends JFrame implements ActionListener {
+
+    private JButton[] botones;
+
+    private static final String[] nombres = {
+        "uno", "dos", "tres", "cuatro", "cinco", "seis"
+    };
+
+    private boolean alternar = true;
+    private Container contenedor;
+    private GridLayout cuadricula1;
+    private GridLayout cuadricula2;
+
+    public Main() {
+        super("Demostracion de GridLayout");
+
+        cuadricula1 = new GridLayout(2, 3, 5, 5);
+        cuadricula2 = new GridLayout(3, 2);
+
+        contenedor = getContentPane();
+        setLayout(cuadricula1);
+
+        botones = new JButton[nombres.length];
+
+        for (int i = 0; i < nombres.length; i++) {
+            botones[i] = new JButton(nombres[i]);
+            botones[i].addActionListener(this);
+            add(botones[i]);
+        }
+
+        setSize(400, 250);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent evento) {
+        if (alternar) {
+            contenedor.setLayout(cuadricula2);
+        } else {
+            contenedor.setLayout(cuadricula1);
+        }
+
+        alternar = !alternar;
+        contenedor.validate();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Main());
+    }
+}
