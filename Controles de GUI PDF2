@@ -1,0 +1,348 @@
+//1.JButton: botones y eventos
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Main extends JFrame {
+
+    private JButton botonSimple;
+    private JButton botonElegante;
+
+    public Main() {
+        super("INT_SANC");
+        setLayout(new FlowLayout());
+
+        botonSimple = new JButton("Boton simple");
+        add(botonSimple);
+
+        // Iconos integrados para ejecutar sin archivos GIF
+        Icon icono1 = UIManager.getIcon("OptionPane.informationIcon");
+        Icon icono2 = UIManager.getIcon("OptionPane.warningIcon");
+
+        botonElegante = new JButton("Boton elegante", icono1);
+        botonElegante.setRolloverIcon(icono2);
+        add(botonElegante);
+
+        ManejadorBoton manejador = new ManejadorBoton();
+        botonSimple.addActionListener(manejador);
+        botonElegante.addActionListener(manejador);
+
+        setSize(400, 140);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private class ManejadorBoton implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent evento) {
+            JOptionPane.showMessageDialog(
+                Main.this,
+                "Usted oprimio: " + evento.getActionCommand()
+            );
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Main());
+    }
+}
+//2. JCheckBox: casillas de verificación
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Main extends JFrame {
+
+    private JTextField campoTexto;
+    private JCheckBox negritaJCheckBox;
+    private JCheckBox cursivaJCheckBox;
+
+    public Main() {
+        super("	PINT_SANC");
+        setLayout(new FlowLayout());
+
+        campoTexto = new JTextField(
+            "Observe como cambia el estilo de letra", 25
+        );
+        campoTexto.setFont(new Font("Serif", Font.PLAIN, 14));
+        add(campoTexto);
+
+        negritaJCheckBox = new JCheckBox("Negrita");
+        cursivaJCheckBox = new JCheckBox("Cursiva");
+
+        add(negritaJCheckBox);
+        add(cursivaJCheckBox);
+
+        ManejadorCheckBox manejador = new ManejadorCheckBox();
+
+        negritaJCheckBox.addItemListener(manejador);
+        cursivaJCheckBox.addItemListener(manejador);
+
+        setSize(400, 150);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private class ManejadorCheckBox implements ItemListener {
+        @Override
+        public void itemStateChanged(ItemEvent evento) {
+            Font tipoLetra;
+
+            if (negritaJCheckBox.isSelected()
+                    && cursivaJCheckBox.isSelected()) {
+                tipoLetra = new Font(
+                    "Serif", Font.BOLD + Font.ITALIC, 14
+                );
+            } else if (negritaJCheckBox.isSelected()) {
+                tipoLetra = new Font("Serif", Font.BOLD, 14);
+            } else if (cursivaJCheckBox.isSelected()) {
+                tipoLetra = new Font("Serif", Font.ITALIC, 14);
+            } else {
+                tipoLetra = new Font("Serif", Font.PLAIN, 14);
+            }
+
+            campoTexto.setFont(tipoLetra);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Main());
+    }
+}
+//3.JRadioButton: botones de opción
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Main extends JFrame {
+
+    private JTextField campoTexto;
+    private JCheckBox negritaJCheckBox;
+    private JCheckBox cursivaJCheckBox;
+
+    public Main() {
+        super("	PINT_SANC");
+        setLayout(new FlowLayout());
+
+        campoTexto = new JTextField(
+            "Observe como cambia el estilo de letra", 25
+        );
+        campoTexto.setFont(new Font("Serif", Font.PLAIN, 14));
+        add(campoTexto);
+
+        negritaJCheckBox = new JCheckBox("Negrita");
+        cursivaJCheckBox = new JCheckBox("Cursiva");
+
+        add(negritaJCheckBox);
+        add(cursivaJCheckBox);
+
+        ManejadorCheckBox manejador = new ManejadorCheckBox();
+
+        negritaJCheckBox.addItemListener(manejador);
+        cursivaJCheckBox.addItemListener(manejador);
+
+        setSize(400, 150);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    private class ManejadorCheckBox implements ItemListener {
+        @Override
+        public void itemStateChanged(ItemEvent evento) {
+            Font tipoLetra;
+
+            if (negritaJCheckBox.isSelected()
+                    && cursivaJCheckBox.isSelected()) {
+                tipoLetra = new Font(
+                    "Serif", Font.BOLD + Font.ITALIC, 14
+                );
+            } else if (negritaJCheckBox.isSelected()) {
+                tipoLetra = new Font("Serif", Font.BOLD, 14);
+            } else if (cursivaJCheckBox.isSelected()) {
+                tipoLetra = new Font("Serif", Font.ITALIC, 14);
+            } else {
+                tipoLetra = new Font("Serif", Font.PLAIN, 14);
+            }
+
+            campoTexto.setFont(tipoLetra);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Main());
+    }
+}
+
+//4.JComboBox: lista desplegable
+
+import javax.swing.*;
+import java.awt.*;
+
+public class Main extends JFrame {
+
+    private JComboBox<String> imagenesJComboBox;
+    private JLabel etiqueta;
+
+    private final String[] nombres = {
+        "Informacion", "Advertencia", "Error", "Pregunta"
+    };
+
+    private final Icon[] iconos = {
+        UIManager.getIcon("OptionPane.informationIcon"),
+        UIManager.getIcon("OptionPane.warningIcon"),
+        UIManager.getIcon("OptionPane.errorIcon"),
+        UIManager.getIcon("OptionPane.questionIcon")
+    };
+
+    public Main() {
+        super("	PINT_SANC");
+        setLayout(new FlowLayout());
+
+        imagenesJComboBox = new JComboBox<>(nombres);
+        imagenesJComboBox.setMaximumRowCount(3);
+        add(imagenesJComboBox);
+
+        etiqueta = new JLabel(iconos[0]);
+        add(etiqueta);
+
+        imagenesJComboBox.addItemListener(evento -> {
+            if (evento.getStateChange()
+                    == java.awt.event.ItemEvent.SELECTED) {
+                etiqueta.setIcon(
+                    iconos[imagenesJComboBox.getSelectedIndex()]
+                );
+            }
+        });
+
+        setSize(350, 180);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Main());
+    }
+}
+
+//5.JList: lista de selección simple
+
+import javax.swing.*;
+import java.awt.*;
+
+public class Main extends JFrame {
+
+    private JList<String> listaColores;
+
+    private static final String[] nombresColores = {
+        "Negro", "Azul", "Cyan", "Gris oscuro",
+        "Gris", "Verde", "Gris claro", "Magenta",
+        "Naranja", "Rosa", "Rojo", "Blanco", "Amarillo"
+    };
+
+    private static final Color[] colores = {
+        Color.BLACK, Color.BLUE, Color.CYAN,
+        Color.DARK_GRAY, Color.GRAY, Color.GREEN,
+        Color.LIGHT_GRAY, Color.MAGENTA,
+        Color.ORANGE, Color.PINK, Color.RED,
+        Color.WHITE, Color.YELLOW
+    };
+
+    public Main() {
+        super("	PINT_SANC");
+        setLayout(new FlowLayout());
+
+        listaColores = new JList<>(nombresColores);
+        listaColores.setVisibleRowCount(5);
+        listaColores.setSelectionMode(
+            ListSelectionModel.SINGLE_SELECTION
+        );
+
+        add(new JScrollPane(listaColores));
+
+        listaColores.addListSelectionListener(evento -> {
+            if (!evento.getValueIsAdjusting()) {
+                int indice = listaColores.getSelectedIndex();
+
+                if (indice >= 0) {
+                    getContentPane().setBackground(colores[indice]);
+                }
+            }
+        });
+
+        setSize(350, 220);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Main());
+    }
+}
+//6.JList: selección múltiple
+import javax.swing.*;
+import java.awt.*;
+import java.util.List;
+
+public class Main extends JFrame {
+
+    private JList<String> listaColores;
+    private JList<String> listaCopia;
+    private JButton botonCopiar;
+
+    private static final String[] nombresColores = {
+        "Negro", "Azul", "Cyan", "Gris oscuro",
+        "Gris", "Verde", "Gris claro", "Magenta",
+        "Naranja", "Rosa", "Rojo", "Blanco", "Amarillo"
+    };
+
+    public Main() {
+        super("	PINT_SANC");
+        setLayout(new FlowLayout());
+
+        listaColores = new JList<>(nombresColores);
+        listaColores.setVisibleRowCount(5);
+        listaColores.setSelectionMode(
+            ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
+        );
+
+        add(new JScrollPane(listaColores));
+
+        botonCopiar = new JButton("Copiar >>>");
+        add(botonCopiar);
+
+        listaCopia = new JList<>();
+        listaCopia.setVisibleRowCount(5);
+        listaCopia.setFixedCellWidth(120);
+        listaCopia.setSelectionMode(
+            ListSelectionModel.SINGLE_INTERVAL_SELECTION
+        );
+
+        add(new JScrollPane(listaCopia));
+
+        botonCopiar.addActionListener(evento -> {
+            List<String> seleccionados =
+                listaColores.getSelectedValuesList();
+
+            listaCopia.setListData(
+                seleccionados.toArray(new String[0])
+            );
+        });
+
+        setSize(450, 230);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Main());
+    }
+}
+
