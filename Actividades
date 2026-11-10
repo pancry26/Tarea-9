@@ -1,1 +1,67 @@
+//1.1FlowLayout
+import javax.swing.*;
+import java.awt.*;
 
+public class Main {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame ventana = new JFrame("FlowLayout - PINT_SANC");
+            ventana.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
+
+            for (int i = 1; i <= 5; i++) {
+                ventana.add(new JButton("Boton " + i));
+            }
+
+            ventana.setSize(450, 200);
+            ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            ventana.setLocationRelativeTo(null);
+            ventana.setVisible(true);
+        });
+    }
+}
+
+//1.2BorderLayout
+import javax.swing.*;
+import java.awt.*;
+
+public class Main {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame ventana = new JFrame("BorderLayout - PINT_SANC");
+            ventana.setLayout(new BorderLayout(5, 5));
+
+            ventana.add(new JButton("NORTE"), BorderLayout.NORTH);
+            ventana.add(new JButton("SUR"), BorderLayout.SOUTH);
+            ventana.add(new JButton("ESTE"), BorderLayout.EAST);
+            ventana.add(new JButton("OESTE"), BorderLayout.WEST);
+            ventana.add(new JButton("CENTRO"), BorderLayout.CENTER);
+
+            ventana.setSize(450, 300);
+            ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            ventana.setLocationRelativeTo(null);
+            ventana.setVisible(true);
+        });
+    }
+}
+
+//1.3GridLayout
+import javax.swing.*;
+import java.awt.*;
+
+public class Main {
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            JFrame ventana = new JFrame("GridLayout - PINT_SANC");
+            ventana.setLayout(new GridLayout(2, 3, 10, 10));
+
+            for (int i = 1; i <= 6; i++) {
+                ventana.add(new JButton("Boton " + i));
+            }
+
+            ventana.setSize(450, 250);
+            ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            ventana.setLocationRelativeTo(null);
+            ventana.setVisible(true);
+        });
+    }
+}
